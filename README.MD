@@ -1,11 +1,9 @@
 # BLT Net
 
 This repository contains the implementation of the BLT Net.
-The model is implemented in PyTorch and PyTorch Lightning and provides customisation options for various number of blocks, layers, recurrent interaction types, and timesteps.
+The model is implemented in PyTorch and provides customisation options for various number of blocks, layers, recurrent interaction types, and timesteps.
 
-## Dependecies
 
-Please make sure https://github.com/KietzmannLab/pytorch-dataset-loaders and it's dependencies are installed.
 
 ## Usage
 
@@ -27,7 +25,12 @@ model = BLT_net(
 )
 ```
 
-Here is a breakdown of the parameters used to initialise the model:
+## How to run the model
+See example training process implemented in PyTorch Lightning in ```lightnin-blt.py```
+For that please make sure https://github.com/KietzmannLab/pytorch-dataset-loaders and it's dependencies are installed.
+
+
+## Parameters
 
 **n_blocks**: Number of convolutional blocks in the network. Each block is composed of several layers. This parameter allows you to control the depth and capacity of the model.
 
