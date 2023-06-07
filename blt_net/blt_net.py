@@ -18,7 +18,6 @@ class BLT_net(nn.Module):
 
         for block_idx in range(self.n_blocks):
             block = nn.ModuleList()
-
             out_channels = n_start_filters * (2 ** block_idx)
 
             for layer_idx in range(self.n_layers):
@@ -31,9 +30,7 @@ class BLT_net(nn.Module):
                     layer = BLT_Conv(out_channels, out_channels, kernel_size,
                                      is_lateral_enabled, is_topdown_enabled, LT_interaction)
 
-                layer_ln = nn.LayerNorm(
-                    [out_channels, image_size // (2 ** block_idx), image_size // (2 ** block_idx)])
-
+                layer_ln = nn.LayerNorm([out_channels, image_size // (2 ** block_idx), image_size // (2 ** block_idx)])
                 block.append(LayerWithNorm(layer, layer_ln))
 
                 # Input channels for the next layer is the output channels of the current layer
@@ -98,36 +95,27 @@ class LayerWithNorm(nn.Module):
 class BLT_Conv(nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size, is_lateral_enabled, is_topdown_enabled, LT_interaction):
         super().__init__()
-        self.is_lateral_enabled = is_lateral_enabled
-        self.is_topdown_enabled = is_topdown_enabled
         self.LT_interaction = LT_interaction
-        self.bottom_up = nn.Conv2d(
-            in_channels, out_channels, kernel_size, padding="same")
+        self.bottom_up = nn.Conv2d(in_channels, out_channels, kernel_size, padding="same")
 
         if is_lateral_enabled:
-            self.lateral = nn.Conv2d(
-                out_channels, out_channels, kernel_size, padding="same")
+            self.lateral = nn.Conv2d(out_channels, out_channels, kernel_size, padding="same")
 
         if is_topdown_enabled:
             ct_padding = int((kernel_size - 1) / 2)
-            self.top_down = nn.ConvTranspose2d(
-                out_channels * 2, out_channels, kernel_size, stride=2, padding=ct_padding, output_padding=1)
+            self.top_down = nn.ConvTranspose2d(out_channels * 2, out_channels, kernel_size, stride=2, padding=ct_padding, output_padding=1)
 
     def forward(self, b_input, l_input=None, t_input=None):
         b_input = self.bottom_up(b_input)
-        # print(f'bottom_up output size: {b_input.size()}')
-        l_input = self.lateral(l_input) if self.is_lateral_enabled and l_input is not None else None
-        t_input = self.top_down(t_input) if self.is_topdown_enabled and t_input is not None else None
-        # print(f'lateral output size: {l_input.size() if l_input is not None else None}')
-        # print(f'top_down output size: {t_input.size() if t_input is not None else None}')
+        l_input = self.lateral(l_input) if l_input is not None else None
+        t_input = self.top_down(t_input) if t_input is not None else None
 
         if self.LT_interaction == "additive":
             return self.additive_combination(b_input, l_input, t_input)
         elif self.LT_interaction == "multiplicative":
             return self.multiplicative_combination(b_input, l_input, t_input)
         else:
-            raise ValueError(
-                "LT_interaction must be additive or multiplicative")
+            raise ValueError("LT_interaction must be additive or multiplicative")
 
     def additive_combination(self, b_input, l_input, t_input):
         result = b_input
