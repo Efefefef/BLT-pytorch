@@ -51,12 +51,12 @@ def main():
                                  val_transformations=val_test_transformations,
                                  test_transofrmations=val_test_transformations)
 
-    model = BLT_net(n_blocks=5,
+    model = BLT_net(n_blocks=3,
                     n_layers=1,
-                    is_lateral_enabled=True,
-                    is_topdown_enabled=True,
-                    LT_interaction="additive",
-                    timesteps=10)
+                    is_lateral_enabled=hyperparams['lateral_connections'],
+                    is_topdown_enabled=hyperparams['topdown_connections'],
+                    LT_interaction=hyperparams['LT_interaction'],
+                    timesteps=hyperparams['timesteps'])
 
     scalar = torch.cuda.amp.GradScaler(hyperparams['use_amp'])
     optimizer = Adam(lr=hyperparams['learning_rate'])
@@ -103,9 +103,9 @@ def set_hyperparameters():
         'model': 'BLT_net',  # model to be used
         'identifier': '1',  # identifier in case we run multiple versions of the net
         'use_blt_loss': True,
-        'timesteps': 10,  # number of timesteps to unroll the RNN
+        'timesteps': 8,  # number of timesteps to unroll the RNN
         'lateral_connections': 1,  # if lateral connections should exist throughout the network
-        'topdown_connections': 0,  # if topdown connections should exist throughout the network
+        'topdown_connections': 1,  # if topdown connections should exist throughout the network
         # 'additive' or 'multiplicative' interaction with bottom-up flow
         'LT_interaction': 'additive',
         'LT_position': 'all',  # 'all' = everywhere, 'last' = at the GAP layer
