@@ -1,9 +1,0 @@
-name: bl
-channels:
-  - pytorch
-  - defaults
-dependencies:
-  - python=3.10.0=h12debd9_5
-  - pytorch=2.0.0=py3.10_cpu_0
-  - pip:
-    - h5py==3.8.0
