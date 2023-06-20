@@ -1,2 +1,3 @@
-lightning_logs
+logs
 __pycache__
+ecoset*

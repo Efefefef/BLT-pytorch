@@ -39,8 +39,7 @@ class BLT_net(nn.Module):
             self.blocks.append(block)
 
         # Define the readout layer
-        self.readout = nn.Linear(n_start_filters * 2
-                                 ** (n_blocks - 1), n_classes)
+        self.readout = nn.Linear(n_start_filters * 2** (n_blocks - 1), n_classes)
 
     def forward(self, inputs):
         last_layer_activations = [None for _ in range(self.n_blocks)]

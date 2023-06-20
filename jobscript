@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --nodes 1
-#SBATCH -c 15
-#SBATCH -p klab
+#SBATCH -c 9
+#SBATCH -p klab-gpu
 #SBATCH --gres=gpu:H100.80gb:1
 #SBATCH --error=ecoset_multi_error.o%j
 #SBATCH --output=ecoset_multi_output.o%j
@@ -17,4 +17,4 @@ eval "$(conda shell.bash hook)"
 conda activate h100
 
 
-python lightning-blt.py
+python train-blt.py
