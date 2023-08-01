@@ -26,8 +26,9 @@ model = BLT_net(
 ```
 
 ## How to run the model
-See example training process implemented in PyTorch Lightning in ```lightnin-blt.py```
+See example training process implemented in PyTorch Lightning in ```train.py```
 For that please make sure https://github.com/KietzmannLab/pytorch-dataset-loaders and it's dependencies are installed.
+Examplary plotting is implemented in ```plot.ipynb```
 
 
 ## Parameters

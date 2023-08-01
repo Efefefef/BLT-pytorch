@@ -10,7 +10,7 @@
   "lateral_connections": 1,
   "topdown_connections": 1,
   "LT_interaction": "additive",
-  "log_path": "logs",
+  "log_path": "logs/",
   "ckpt_path": null,
   "accelerator": "gpu",
   "devices": "-1",

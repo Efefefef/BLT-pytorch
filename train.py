@@ -9,7 +9,7 @@ from pytorch_dataset_loaders.optimizers import Adam
 from pytorch_dataset_loaders.pytorch_transforms import Transforms
 from pytorch_dataset_loaders.pytorch_datasets import GenericDataModule, Ecoset
 from pytorch_dataset_loaders.schedulers import ReduceLROnPlateau
-from pytorch_dataset_loaders.lightning_trainer import LightningModel, LightningSpecialTrain
+from pytorch_dataset_loaders.lightning_trainer import LightningModel, LightningModelTrain
 from pytorch_dataset_loaders.pytorch_callbacks import CustomProgressBar, CheckpointModel
 from pytorch_dataset_loaders.pytorch_loggers import CustomNPZLogger
 
@@ -104,8 +104,8 @@ def main():
 
     ckpt_path = os.path.join(hyperparams['log_path'], experiment_name)
     modelcheckpoint = CheckpointModel(save_dir=hyperparams['log_path'], filename=experiment_name, every_n_epochs=10)
-    # Now we have everything (except the logger) to start the training
-    lightning_special_train = LightningSpecialTrain(blt_data,
+
+    lightning_special_train = LightningModelTrain(blt_data,
                                                     lightning_model,
                                                     ckpt_path=ckpt_path,
                                                     epochs=hyperparams['n_epochs'],
@@ -114,13 +114,13 @@ def main():
                                                         progress.progress_bar,
                                                         modelcheckpoint.checkpoint_callback
                                                         ],
-                                                    # logger=npz_logger,
+                                                    logger=npz_logger,
                                                     devices=hyperparams['devices'],
                                                     strategy="ddp_find_unused_parameters_true")
 
     lightning_special_train._train_model()
 
-    # Save metrics to json file
+    # Save metrics to json file (in addition to the npz logging done by the lightning logger)
     metrics = extract_metrics_from_model(lightning_model)
     save_metrics_to_file(metrics, hyperparams['log_path'], experiment_name)
 
